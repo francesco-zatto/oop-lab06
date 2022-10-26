@@ -2,6 +2,7 @@ package it.unibo.exceptions.fakenetwork.impl;
 
 import it.unibo.exceptions.arithmetic.ArithmeticService;
 import it.unibo.exceptions.fakenetwork.api.NetworkComponent;
+import it.unibo.exceptions.fakenetwork.exceptions.NetworkException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,9 +27,9 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
      * @param randomSeed random generator seed for reproducibility
      */
     public ServiceBehindUnstableNetwork(final double failProbability, final int randomSeed) {
-        /*
-         * The probability should be in [0, 1[!
-         */
+        if (illegalProbability(failProbability)) {
+            throw new IllegalArgumentException();
+        }
         this.failProbability = failProbability;
         randomGenerator = new Random(randomSeed);
     }
@@ -47,7 +48,6 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
         this(0.5);
     }
 
-    @Override
     public void sendData(final String data) throws IOException {
         accessTheNework(data);
         final var exceptionWhenParsedAsNumber = nullIfNumberOrException(data);
@@ -67,7 +67,6 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
         }
     }
 
-    @Override
     public String receiveResponse() throws IOException {
         accessTheNework(null);
         try {
@@ -77,10 +76,14 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
         }
     }
 
-    private void accessTheNework(final String message) throws IOException {
+    private void accessTheNework(final String message) throws NetworkException {
         if (randomGenerator.nextDouble() < failProbability) {
-            throw new IOException("Generic I/O error");
+            throw new NetworkException("Generic I/O error");
         }
+    }
+
+    private boolean illegalProbability(double failProbability) {
+        return failProbability < 0 || failProbability >= 1;
     }
 
 }
