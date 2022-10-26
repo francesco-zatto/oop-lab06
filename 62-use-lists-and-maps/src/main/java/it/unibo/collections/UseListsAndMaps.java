@@ -85,7 +85,8 @@ public final class UseListsAndMaps {
          * Oceania -> 38,304,000
          */
         final Map<String, Long> continentsMap = new HashMap<>();
-        final List<String> continentKeys = List.of("Africa", "Americas", "Antarctica", "Asia", "Europe", "Oceania");
+        final List<String> continentKeys = List.of("Africa", "Americas", "Antarctica",
+             "Asia", "Europe", "Oceania");
         final List<Long> continentPopulations = List.of(1_110_635_000L, 972_005_000L, 0L,
              4_298_723_000L, 742_452_000L, 38_304_000L);
         for (int i = 0; i < continentKeys.size(); i++) {
