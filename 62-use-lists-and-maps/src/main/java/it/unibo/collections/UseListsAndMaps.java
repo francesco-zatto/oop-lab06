@@ -1,6 +1,7 @@
 package it.unibo.collections;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -55,43 +56,18 @@ public final class UseListsAndMaps {
          * using the previous lists. In order to measure times, use as example
          * TestPerformance.java.
          */
-        printInsertTime(firstList);
-        printInsertTime(secondList);
+        String message = "Inserting 100_000 ints in a ";
+        printTimes(firstList, message, "insert");
+        printTimes(secondList, message, "insert");
         /*
          * 6) Measure the performance of reading 1000 times an element whose
          * position is in the middle of the collection for both firstList and
          * LinkedList, using the collections of point 5. In order to measure
          * times, use as example PerfTest.java.
-         *
-        arrayTime = System.nanoTime();
-        for (int i = 0; i < 1000; i++) {
-            firstList.get(firstList.size() / 2);
-        }
-        arrayTime = System.nanoTime() - arrayTime;
-
-        linkedTime = System.nanoTime();
-        for (int i = 0; i < 1000; i++) {
-            secondList.get(secondList.size() / 2);
-        }
-        linkedTime = System.nanoTime() - linkedTime;
-
-        arrayMillis = TimeUnit.NANOSECONDS.toMillis(arrayTime);
-        System.out.println(// NOPMD
-            "Reading 1000 times ints in an firstList took "
-                + arrayTime
-                + "ns ("
-                + arrayMillis
-                + "ms)"
-        );
-
-        linkedMillis = TimeUnit.NANOSECONDS.toMillis(linkedTime);
-        System.out.println(// NOPMD
-            "Reading 1000 ints in a LinkedList took "
-                + linkedTime
-                + "ns ("
-                + linkedMillis
-                + "ms)"
-        );
+         */
+        message = "Reading 1000 times in a ";
+        printTimes(firstList, message, "read");
+        printTimes(secondList, message, "read");
         /*
          * 7) Build a new Map that associates to each continent's name its
          * population:
@@ -108,26 +84,40 @@ public final class UseListsAndMaps {
          *
          * Oceania -> 38,304,000
          */
+        final Map<String, Long> continentsMap = new HashMap<>();
+        final List<String> continentKeys = List.of("Africa", "Americas", "Antarctica", "Asia", "Europe", "Oceania");
+        final List<Long> continentPopulations = List.of(1_110_635_000L, 972_005_000L, 0L,
+             4_298_723_000L, 742_452_000L, 38_304_000L);
+        for (int i = 0; i < continentKeys.size(); i++) {
+            continentsMap.put(continentKeys.get(i), continentPopulations.get(i));
+        }
         /*
          * 8) Compute the population of the world
          */
+        long worldPopulation = 0;
+        for (final var key : continentsMap.keySet()) {
+            worldPopulation = worldPopulation + continentsMap.get(key);
+        }
+        System.out.println("The population of the world: " + worldPopulation);
     }
 
-    private static void printInsertTime(List<Integer> list) {
+    private static void printTimes(final List<Integer> list, final String message, final String op) {
         long time = System.nanoTime();
-        for (int i = 0; i < 100_000; i++) {
-            list.add(0, i);
+        final int numOperations = op == "insert" ? 100_000 : 1000;
+        for (int i = 0; i < numOperations; i++) {
+            listOperation(list, op);
         }
         time = System.nanoTime() - time;
-        var millis = TimeUnit.NANOSECONDS.toMillis(time);
-        System.out.println(// NOPMD
-            "Inserting 100_000 ints in a "
-                + list.getClass()
-                +" took "
-                + time
-                + "ns ("
-                + millis
-                + "ms)"
-        );
+        final var millis = TimeUnit.NANOSECONDS.toMillis(time);
+        System.out.println(message + list.getClass() + " took " + time + "ns (" + millis + "ms)");
+    }
+
+    private static void listOperation(final List<Integer> list, final String op) {
+        if (op == "insert") {
+            list.add(0, 1);
+        }
+        if (op == "read") {
+            list.get(list.size() / 2);
+        }
     }
 }
