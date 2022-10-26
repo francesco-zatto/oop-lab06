@@ -1,0 +1,5 @@
+#no bin, build, .gradle, .class
+bin/
+build/
+*.gradle
+*.class
