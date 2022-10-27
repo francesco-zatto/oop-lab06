@@ -56,18 +56,16 @@ public final class UseListsAndMaps {
          * using the previous lists. In order to measure times, use as example
          * TestPerformance.java.
          */
-        String message = "Inserting 100_000 ints in a ";
-        printTimes(firstList, message, "insert");
-        printTimes(secondList, message, "insert");
+        printInsertingTimes(firstList);
+        printInsertingTimes(secondList);
         /*
          * 6) Measure the performance of reading 1000 times an element whose
          * position is in the middle of the collection for both firstList and
          * LinkedList, using the collections of point 5. In order to measure
          * times, use as example PerfTest.java.
          */
-        message = "Reading 1000 times in a ";
-        printTimes(firstList, message, "read");
-        printTimes(secondList, message, "read");
+        printReadingTimes(firstList);
+        printReadingTimes(secondList);
         /*
          * 7) Build a new Map that associates to each continent's name its
          * population:
@@ -102,23 +100,27 @@ public final class UseListsAndMaps {
         System.out.println("The population of the world: " + worldPopulation);
     }
 
-    private static void printTimes(final List<Integer> list, final String message, final String op) {
+    private static void printInsertingTimes(final List<Integer> list) {
         long time = System.nanoTime();
-        final int numOperations = op == "insert" ? 100_000 : 1000;
-        for (int i = 0; i < numOperations; i++) {
-            listOperation(list, op);
+        for (int i = 0; i < 100_000; i++) {
+            list.add(0, i);
         }
         time = System.nanoTime() - time;
         final var millis = TimeUnit.NANOSECONDS.toMillis(time);
-        System.out.println(message + list.getClass() + " took " + time + "ns (" + millis + "ms)");
+        System.out.println("Inserting 100_000 ints in a " + list.getClass() 
+            + " took " + time + "ns (" + millis + "ms)");
     }
 
-    private static void listOperation(final List<Integer> list, final String op) {
-        if (op == "insert") {
-            list.add(0, 1);
-        }
-        if (op == "read") {
+    private static void printReadingTimes(final List<Integer> list) {
+        long time = System.nanoTime();
+        for (int i = 0; i < 1000; i++) {
             list.get(list.size() / 2);
         }
+        time = System.nanoTime() - time;
+        final var millis = TimeUnit.NANOSECONDS.toMillis(time);
+        System.out.println("Reading 1000 times in a " + list.getClass()
+             + " took " + time + "ns (" + millis + "ms)");
     }
+
+
 }
