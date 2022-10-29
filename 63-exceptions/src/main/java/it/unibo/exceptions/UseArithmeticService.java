@@ -51,13 +51,13 @@ public final class UseArithmeticService {
     }
 
     private static String retryReceiveOnNetworkError(final NetworkComponent server) {
-        String message = "";
-        try {
-            message = server.receiveResponse();
-        } catch (IOException e) {
-            retryReceiveOnNetworkError(server);
+        while(true) {
+            try {
+                return server.receiveResponse();
+            } catch (IOException e) {
+                retryReceiveOnNetworkError(server);
+            }
         }
-        return message;
     }
 
     private static void assertEqualsAsDouble(final String expected, final String actual) {
